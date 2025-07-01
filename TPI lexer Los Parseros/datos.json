@@ -1,0 +1,69 @@
+{
+    "equipos": [
+        {
+            "nombre_equipo": "Innovadores 2025",
+            "identidad_equipo": "ID001",
+            "link": "https://equipo2025.com",
+            "asignatura": "Lenguajes Formales",
+            "carrera": "Ingeniería en Sistemas",
+            "universidad_regional": "UNRC",
+            "dirección": {
+                "calle": "Av. Siempre Viva 742",
+                "ciudad": "Córdoba",
+                "país": "Argentina"
+            },
+            "alianza_equipo": "Alianza Tech",
+            "integrantes": [
+                {
+                    "nombre": "Juan Pérez",
+                    "edad": 22,
+                    "cargo": "Desarrollador",
+                    "foto": "https://equipo2025.com/fotos/juan.jpg",
+                    "email": "juan.perez@unrc.edu.ar",
+                    "habilidades": "Python, Java, SQL",
+                    "salario": 150000.50,
+                    "activo": true
+                },
+                {
+                    "nombre": "Lucía García",
+                    "edad": 23,
+                    "cargo": "Diseñadora",
+                    "foto": "https://equipo2025.com/fotos/lucia.jpg",
+                    "email": "lucia.garcia@unrc.edu.ar",
+                    "habilidades": "UX/UI, Figma, HTML",
+                    "salario": 140000.00,
+                    "activo": true
+                }
+            ],
+            "proyectos": [
+                {
+                    "nombre": "Sistema de Gestión Académica",
+                    "estado": "En progreso",
+                    "resumen": "Plataforma web para la gestión de estudiantes y profesores.",
+                    "tareas": [
+                        {
+                            "nombre": "Diseño de base de datos",
+                            "estado": "Completado",
+                            "resumen": "Modelo relacional y diagramas.",
+                            "fecha_inicio": "2025-03-01",
+                            "fecha_fin": "2025-03-10"
+                        },
+                        {
+                            "nombre": "Desarrollo frontend",
+                            "estado": "En progreso",
+                            "resumen": "Interfaces con React.",
+                            "fecha_inicio": "2025-03-11",
+                            "fecha_fin": "2025-04-01"
+                        }
+                    ],
+                    "fecha_inicio": "2025-03-01",
+                    "fecha_fin": "2025-06-30",
+                    "video": "https://equipo2025.com/videos/proyecto.mp4",
+                    "conclusion": "Se espera completar el desarrollo en los próximos meses."
+                }
+            ]
+        }
+    ],
+    "version": "1.0",
+    "firma_digital": "ABC123XYZ"
+}

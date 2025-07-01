@@ -1,0 +1,99 @@
+{
+    "equipos": [
+        {
+            "nombre_equipo": "Innovadores 2025",
+            "identidad_equipo": "ID001",
+            "asignatura": "Lenguajes Formales",
+            "carrera": "Ingeniería en Sistemas",
+            "universidad_regional": "UNRC",
+            "alianza_equipo": "Alianza Tech",
+            "link": "https://equipo2025.com",
+            "dirección": {
+                "calle": "Av. Siempre Viva 742",
+                "ciudad": "Córdoba",
+                "país": "Argentina"
+            },
+            "integrantes": [
+                {
+                    "nombre": "Juan Pérez",
+                    "edad": 22,
+                    "cargo": "Desarrollador",
+                    "foto": "https://equipo2025.com/fotos/juan.jpg",
+                    "email": "juan.perez@unrc.edu.ar",
+                    "habilidades": "Python, Java, SQL",
+                    "salario": 150000.50,
+                    "activo": true
+                },
+                {
+                    "nombre": "Lucía García",
+                    "cargo": "Diseñadora",
+                    "foto": "https://equipo2025.com/fotos/lucia.jpg",
+                    "email": "lucia.garcia@unrc.edu.ar",
+                    "habilidades": "UX/UI, Figma, HTML",
+                    "salario": 140000.00,
+                    "activo": true
+                }
+            ],
+            "proyectos": [
+                {
+                    "nombre": "Sistema de Gestión Académica",
+                    "estado": "En progreso",
+                    "resumen": "Plataforma web para la gestión de estudiantes y profesores.",
+                    "tareas": [
+                        {
+                            "nombre": "Diseño de base de datos",
+                            "estado": "Completado",
+                            "resumen": "Modelo relacional y diagramas.",
+                            "fecha_inicio": "2025-03-01",
+                            "fecha_fin": "2025-03-10"
+                        },
+                        {
+                            "nombre": "Desarrollo frontend",
+                            "estado": "En progreso",
+                            "resumen": "Interfaces con React."
+                        }
+                    ],
+                    "fecha_inicio": "2025-03-01",
+                    "fecha_fin": "2025-06-30",
+                    "video": "https://equipo2025.com/videos/proyecto.mp4",
+                    "conclusion": "Se espera completar el desarrollo en los próximos meses."
+                }
+            ]
+        },
+        {
+            "nombre_equipo": "Equipo Sin Dirección",
+            "identidad_equipo": "ID002",
+            "asignatura": "Compiladores",
+            "carrera": "Licenciatura en Informática",
+            "universidad_regional": "UNLP",
+            "alianza_equipo": "Alianza Libre",
+            "integrantes": [
+                {
+                    "nombre": "Pedro López",
+                    "cargo": "Tester",
+                    "foto": "https://equipo2025.com/fotos/pedro.jpg",
+                    "email": "pedro.lopez@unlp.edu.ar",
+                    "habilidades": "Testing, QA",
+                    "salario": 120000,
+                    "activo": false
+                }
+            ],
+            "proyectos": [
+                {
+                    "nombre": "Herramienta de Pruebas",
+                    "estado": "Finalizado",
+                    "resumen": "Automatización de pruebas.",
+                    "tareas": [
+                        {
+                            "nombre": "Diseño de casos",
+                            "estado": "Completado",
+                            "resumen": "Casos de prueba funcionales."
+                        }
+                    ],
+                    "video": "https://equipo2025.com/videos/pruebas.mp4",
+                    "conclusion": "Proyecto finalizado con éxito."
+                }
+            ]
+        }
+    ]
+}

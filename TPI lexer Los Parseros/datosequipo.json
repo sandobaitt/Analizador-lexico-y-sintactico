@@ -1,0 +1,92 @@
+{
+    "equipos": [
+        {
+            "nombre_equipo": "Los parseros",
+            "identidad_equipo": "https://www.ejemplo.com/logo-los-parceros.png",
+            "link": "https://www.losparceros.dev",
+            "asignatura": "Sintaxis y Semantica de los lenguajes",
+            "carrera": "Ingenieria en sistemas de informacion",
+            "universidad_regional": "Universidad Tecnologica Nacional Facultad Regional Resistencia",
+            "dirección": {
+                "calle": "Arturo Illia 1055",
+                "ciudad": "Resistencia",
+                "país": "Argentina"
+            },
+            "alianza_equipo": "Para la realización de este trabajo, formamos el grupo en base a una alianza que da lugar a la colaboración, el compromiso mutuo y no por menos, por afinidad. Establecimos una dinámica en la que cada integrante aporta sus fortalezas a partir de la matriz de habilidades que van a garantizar el desarrollo correcto del proyecto. Compartiendo lugares y horarios daremos lugar a encuentros semanales para el avance de cada instancia de entrega. Integramos el grupo en base a la comunicación constante y cooperación, aspectos clave para resolver dudas, intercambiar ideas y mejorar el contenido del trabajo. El éxito de nuestro grupo radica en el compromiso de cada integrante con el grupo y con el trabajo en sí. Más allá de cumplir con una responsabilidad académica, nuestra idea es lograr juntos la promoción de la materia, mejorar nuestras habilidades de organización, resolución de problemas y adquirir los aprendizajes propios de la materia.",
+            "integrantes": [
+                {
+                    "nombre": "Ignacio",
+                    "edad": 22,
+                    "cargo": "Developer",
+                    "foto": "https://randomuser.me/api/portraits/men/75.jpg",
+                    "email": "nachylenci@outlook.com",
+                    "habilidades": "conocimientos de programacion orientada a objetos y buen manejo de software de gestion de datos.",
+                    "salario": 305000.50,
+                    "activo": true
+                },
+                {
+                    "nombre": "Julian",
+                    "edad": 21,
+                    "cargo": "Devops",
+                    "foto": "https://randomuser.me/api/portraits/men/76.jpg",
+                    "email": "julianpaluch2023gmail.com",
+                    "habilidades": "conocimientos en sistemas operativos y redes.",
+                    "salario": 305000.50,
+                    "activo": true
+                },
+                {
+                    "nombre": "Valentina",
+                    "edad": 20,
+                    "cargo": "Marketing",
+                    "foto": "https://randomuser.me/api/portraits/men/77.jpg",
+                    "email": "Valentinacami@gmail.com",
+                    "habilidades": "conocimientos de herramientas de marketing y diseño.",
+                    "salario": 305000.50,
+                    "activo": true
+                },
+                {
+                    "nombre": "Ambar",
+                    "edad": 20,
+                    "cargo": "Project Manager",
+                    "foto": "https://randomuser.me/api/portraits/men/75.jpg",
+                    "email": "ambarmart@gmail.com",
+                    "habilidades": "conocimientos en gestion de proyectos.",
+                    "salario": 305000.50,
+                    "activo": true
+                },
+                {
+                    "nombre": "Lautaro",
+                    "edad": 20,
+                    "cargo": "UX designer",
+                    "foto": "https://randomuser.me/api/portraits/men/75.jpg",
+                    "email": "Lautisando@gmail.com",
+                    "habilidades": "conocimientos en softawe de diseño y prototipado.",
+                    "salario": 305000.50,
+                    "activo": true
+                }
+            ],
+            "proyectos": [
+                {
+                    "nombre": "Lexer",
+                    "estado": "In progress",
+                    "resumen": "Tiene un funcionamiento muy bueno y estamos satisfecho con el resultado",
+                    "tareas": [
+                        {
+                            "nombre": "Analisis de requisitos",
+                            "estado": "done",
+                            "resumen": "muy buen trabajo por parte de todo el equipo",
+                            "fecha_inicio": "2024-09-10",
+                            "fecha_fin": "2024-10-05"
+                        }
+                    ],
+                    "fecha_inicio": "2024-09-01",
+                    "fecha_fin": "2024-10-15",
+                    "video": "https://www.youtube.com/watch?v=oHg5SJYRHA0",
+                    "conclusion": "muy buen trabajo por parte de todos los integrantes del grupo, estamos muy satisfechos por los resultados del proyecto"
+                }
+            ]
+        }
+    ],
+    "version": "2.1.0",
+    "firma_digital": "abc123def456ghi789"
+}
