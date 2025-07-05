@@ -6,15 +6,10 @@ import sys
 #cd C:\Users\Sando\Desktop\Sintaxis\TPI 2025\TPI parser
 #python parser_equipos.py datos.json
 
-html_result = ""
-
 precedence = (
     ('nonassoc', 'STRING_t'),
-    ('nonassoc', 'INTEGER_t'),
-    ('nonassoc', 'FLOAT_t'),
-    ('nonassoc', 'BOOL_t'),
     ('nonassoc', 'NULL_t'),
-    ('nonassoc', 'EQUIPOS_t'),
+    
     ('nonassoc', 'VERSION_t'),
     ('nonassoc', 'FIRMA_DIGITAL_t'),
     ('nonassoc', 'NOMBRE_EQUIPO_t'),
@@ -26,7 +21,7 @@ precedence = (
     ('nonassoc', 'UNIVERSIDAD_REGIONAL_t'),
     ('nonassoc', 'ALIANZA_EQUIPO_t'),
     ('nonassoc', 'INTEGRANTES_t'),
-    ('nonassoc', 'PROYECTO_t'),
+    ('nonassoc', 'PROYECTOS_t'),
     ('nonassoc', 'CALLE_t'),
     ('nonassoc', 'CIUDAD_t'),
     ('nonassoc', 'PAIS_t'),
@@ -40,10 +35,12 @@ precedence = (
     ('nonassoc', 'ACTIVO_t'),
     ('nonassoc', 'ESTADO_t'),
     ('nonassoc', 'RESUMEN_t'),
+    ('nonassoc', 'TAREAS_t'),
     ('nonassoc', 'FECHA_INICIO_t'),
     ('nonassoc', 'FECHA_FIN_t'),
     ('nonassoc', 'VIDEO_t'),
     ('nonassoc', 'CONCLUSION_t'),
+    
     ('left', 'COMA'),
     ('left', 'DOS_PUNTOS'),
     ('left', 'LLAVEIZQ', 'LLAVEDER'),
@@ -57,19 +54,18 @@ def p_inicio(p):
     html_result = p[0]
 
 def p_ojson(p):
-    '''ojson : equipos
-            | version
-            | firma
-            | equipos COMA version
-            | version COMA equipos
-            | equipos COMA firma
-            | firma COMA equipos
-            | version COMA firma
-            | firma COMA version
-            | equipos COMA version COMA firma
-            | version COMA firma COMA equipos
-            | firma COMA equipos COMA version'''
-    p[0] = ''.join(str(x) for x in p[1:] if isinstance(x, str))
+    '''ojson : elemento
+             | ojson COMA elemento'''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = p[1] + p[3]
+
+def p_elemento(p):
+    '''elemento : equipos
+                | version
+                | firma'''
+    p[0] = p[1]
 
 def p_version(p):
     'version : VERSION_t DOS_PUNTOS STRING_t'
@@ -92,8 +88,8 @@ def p_lista_equipos(p):
         p[0] = p[2] + p[5]
 
 def p_equipo(p):
-    '''equipo : NOMBRE_EQUIPO_t COMA IDENTIDAD_EQUIPO_t COMA direccion COMA carrera_asignatura COMA integrantes COMA proyectos
-              | NOMBRE_EQUIPO_t COMA IDENTIDAD_EQUIPO_t COMA carrera_asignatura COMA integrantes COMA proyectos'''
+    '''equipo : NOMBRE_EQUIPO_t COMA IDENTIDAD_EQUIPO_t COMA link COMA direccion COMA carrera_asignatura COMA universidad_regional COMA alianza_equipo COMA integrantes COMA proyectos
+              | NOMBRE_EQUIPO_t COMA IDENTIDAD_EQUIPO_t COMA link COMA direccion COMA carrera_asignatura COMA universidad_regional COMA integrantes COMA proyectos'''
     nombre = f"<h1>{p[1]}</h1>"
     contenido = ''.join(x for x in p if isinstance(x, str) and not x.startswith("<h1>"))
     p[0] = f'<div style="border: 1px solid gray; padding: 20px;">{nombre}{contenido}</div>'
@@ -107,12 +103,9 @@ def p_direccion(p):
         p[0] = f"<p>Dirección: {p[4]}</p>"
 
 def p_direccion_campos(p):
-    '''direccion_campos : calle COMA ciudad COMA pais
-                        | ciudad COMA calle COMA pais
-                        | pais COMA ciudad COMA calle'''
-    p[0] = ', '.join([x for x in p[1::2]])
+    '''direccion_campos : calle COMA ciudad COMA pais'''
+    p[0] = ', '.join([p[1], p[3], p[5]])
     
-# NUEVOOOOOOOOOOOOOOOOOOOOO
 def p_calle(p):
     'calle : CALLE_t'
     p[0] = p[1]
@@ -125,9 +118,21 @@ def p_pais(p):
     'pais : PAIS_t'
     p[0] = p[1]
 
+def p_link(p):
+    'link : LINK_t'
+    p[0] = f'<p><b>Link:</b> <a href="{p[1]}" target="_blank">{p[1]}</a></p>'
+
+def p_universidad_regional(p):
+    'universidad_regional : UNIVERSIDAD_REGIONAL_t'
+    p[0] = f'<p><b>Universidad Regional:</b> {p[1]}</p>'
+
 def p_carrera_asignatura(p):
     'carrera_asignatura : CARRERA_t COMA ASIGNATURA_t'
     p[0] = f"<p>Carrera: {p[1]} | Asignatura: {p[3]}</p>"
+
+def p_alianza_equipo(p):
+    'alianza_equipo : ALIANZA_EQUIPO_t'
+    p[0] = f"<p><b>Alianza del equipo:</b> {p[1]}</p>"
 
 def p_integrantes(p):
     'integrantes : INTEGRANTES_t DOS_PUNTOS CORCHIZQ lista_integrantes CORCHDER'
@@ -143,10 +148,24 @@ def p_lista_integrantes(p):
 
 def p_integrante(p):
     '''integrante : NOMBRE_t COMA EDAD_t COMA CARGO_t COMA FOTO_t COMA EMAIL_t COMA HABILIDADES_t COMA SALARIO_t COMA ACTIVO_t'''
-    p[0] = f"<h2>{p[1]}</h2><ul><li>Edad: {p[3]}</li><li>Cargo: {p[5]}</li><li>Foto: {p[7]}</li><li>Email: {p[9]}</li><li>Habilidades: {p[11]}</li><li>Salario: {p[13]}</li><li>Activo: {p[15]}</li></ul>"
+    if len(p) != 16:
+        print("[Error] Integrante con cantidad incorrecta de campos.")
+        p[0] = "<div style='color:red;'>Error: Integrante con campos faltantes o de más.</div>"
+    else:
+        p[0] = (
+            f"<h2>{p[1]}</h2><ul>"
+            f"<li>Edad: {p[3]}</li>"
+            f"<li>Cargo: {p[5]}</li>"
+            f"<li>Foto: {p[7]}</li>"
+            f"<li>Email: {p[9]}</li>"
+            f"<li>Habilidades: {p[11]}</li>"
+            f"<li>Salario: {p[13]}</li>"
+            f"<li>Activo: {p[15]}</li>"
+            "</ul>"
+        )
 
 def p_proyectos(p):
-    'proyectos : PROYECTO_t DOS_PUNTOS CORCHIZQ lista_proyectos CORCHDER'
+    'proyectos : PROYECTOS_t DOS_PUNTOS CORCHIZQ lista_proyectos CORCHDER'
     p[0] = p[4]
 
 def p_lista_proyectos(p):
@@ -158,14 +177,41 @@ def p_lista_proyectos(p):
         p[0] = p[2] + p[5]
 
 def p_proyecto(p):
-    'proyecto : NOMBRE_t COMA ESTADO_t COMA RESUMEN_t COMA tareas COMA FECHA_INICIO_t COMA FECHA_FIN_t COMA VIDEO_t COMA CONCLUSION_t'
-    tabla = f'<table border="1"><tr><th>Nombre</th><th>Estado</th><th>Resumen</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Video</th><th>Conclusión</th></tr>'
-    fila = f'<tr><td>{p[1]}</td><td>{p[3]}</td><td>{p[5]}</td><td>{p[7]}</td><td>{p[9]}</td><td>{p[11]}</td><td>{p[13]}</td></tr>'
-    p[0] = f'<h3>{p[1]}</h3>{tabla}{fila}</table>'
+    '''proyecto : NOMBRE_t COMA ESTADO_t COMA RESUMEN_t COMA tareas COMA FECHA_INICIO_t COMA FECHA_FIN_t COMA video COMA conclusion
+                | NOMBRE_t COMA ESTADO_t COMA RESUMEN_t COMA tareas COMA FECHA_INICIO_t COMA FECHA_FIN_t'''
+    if len(p) == 14:
+        tabla = f'<table border="1"><tr><th>Nombre</th><th>Estado</th><th>Resumen</th><th>Fecha Inicio</th><th>Fecha Fin</th><th>Video</th><th>Conclusión</th></tr>'
+        fila = f'<tr><td>{p[1]}</td><td>{p[3]}</td><td>{p[5]}</td><td>{p[7]}</td><td>{p[9]}</td><td>{p[11]}</td><td>{p[13]}</td></tr>'
+        p[0] = f'<h3>{p[1]}</h3>{tabla}{fila}</table>'
+    else:
+        tabla = f'<table border="1"><tr><th>Nombre</th><th>Estado</th><th>Resumen</th><th>Fecha Inicio</th><th>Fecha Fin</th></tr>'
+        fila = f'<tr><td>{p[1]}</td><td>{p[3]}</td><td>{p[5]}</td><td>{p[7]}</td><td>{p[9]}</td></tr>'
+        p[0] = f'<h3>{p[1]}</h3>{tabla}{fila}</table>'
+
+def p_video(p):
+    'video : VIDEO_t'
+    p[0] = f'<a href="{p[1]}" target="_blank">Ver video</a>'
+    
+def p_conclusion(p):
+    'conclusion : CONCLUSION_t'
+    p[0] = f'{p[1]}'
 
 def p_tareas(p):
-    'tareas : ESTADO_t'
-    p[0] = p[1]
+    'tareas : TAREAS_t lista_tareas'
+    p[0] = p[2]
+
+def p_lista_tareas(p):
+    '''lista_tareas : LLAVEIZQ tarea LLAVEDER
+                    | LLAVEIZQ tarea LLAVEDER COMA lista_tareas'''
+    if len(p) == 4:
+        p[0] = p[2]
+    else:
+        p[0] = p[2] + p[5]
+
+def p_tarea(p):
+    'tarea : NOMBRE_t COMA ESTADO_t COMA RESUMEN_t COMA FECHA_INICIO_t COMA FECHA_FIN_t'
+    # Arma el HTML de la tarea aquí
+    p[0] = f"<li>{p[1]} - {p[3]} - {p[5]} - {p[7]} - {p[9]}</li>"
 
 def p_error(p):
     if p:
@@ -173,13 +219,17 @@ def p_error(p):
     else:
         print("[Error de sintaxis] Fin de entrada inesperado")
 
+parser = yacc.yacc()
+
 def parse_input(data):
-    parser = yacc.yacc()
     return parser.parse(data)
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Uso: python parser.py archivo.json")
+        print("===================================")
+        print("   Proyecto Parser TPI 2025")
+        print("     Grupo: Los Parceros")
+        print("===================================\n")
         sys.exit(1)
 
     archivo = sys.argv[1]
@@ -195,8 +245,8 @@ if __name__ == "__main__":
     from Lexer import convertir_json_a_texto, lexer
     texto = convertir_json_a_texto(datos)
 
-    import parser_equipos  # asegurate de que el nombre del archivo no se llame igual
-    resultado_html = parser_equipos.parse_input(texto)
+    # Ya no necesitas importar parser_equipos ni crear el parser aquí
+    resultado_html = parse_input(texto)
 
     # Guardar HTML
     salida = archivo.replace(".json", ".html")
