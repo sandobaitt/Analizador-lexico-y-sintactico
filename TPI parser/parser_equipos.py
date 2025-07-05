@@ -1,5 +1,6 @@
 import ply.yacc as yacc
 from Lexer import tokens
+from Lexer import convertir_json_a_texto
 import json
 import sys
 
@@ -55,16 +56,16 @@ def p_inicio(p):
 
 def p_ojson(p):
     '''ojson : elemento
-             | ojson COMA elemento'''
+             | ojson elemento'''
     if len(p) == 2:
         p[0] = p[1]
     else:
         p[0] = p[1] + p[3]
 
 def p_elemento(p):
-    '''elemento : equipos
+    '''elemento : firma
                 | version
-                | firma'''
+                | equipos'''
     p[0] = p[1]
 
 def p_version(p):
@@ -218,6 +219,80 @@ def p_error(p):
         print(f"[Error de sintaxis] Token inesperado: {p.type} en línea {p.lineno}")
     else:
         print("[Error de sintaxis] Fin de entrada inesperado")
+        
+def analizar_con_parser(nombre_archivo_json):
+    datos = None
+    try:
+        with open(nombre_archivo_json, "r", encoding="utf-8") as f:
+            datos = json.load(f)
+    except Exception as e:
+        print(f"Error al leer el archivo JSON: {e}")
+        return
+
+    texto = convertir_json_a_texto(datos)
+    if texto:
+        print("===================================")
+        print("       Proyecto Parser")
+        print("     Grupo: Los Parceros")
+        print("===================================\n")
+        resultado_html = parse_input(texto)
+        print("======= Resultado HTML =======\n")
+        print(resultado_html)
+        salida = nombre_archivo_json.replace(".json", ".html")
+        with open(salida, "w", encoding="utf-8") as f:
+            f.write(resultado_html)
+        print(f"\n✅ Archivo HTML generado: {salida}\n")
+        input("\nPresione Enter para salir...")
+
+def analizar_texto_directo_parser():
+    print("===================================")
+    print("       Proyecto Parser")
+    print("     Grupo: Los Parceros")
+    print("===================================\n")
+    print("Ingrese el texto plano (tokens) a analizar (finalice con una línea vacía o 'salir'):")
+    lineas = []
+    while True:
+        try:
+            linea = input()
+        except EOFError:
+            break
+        if linea.strip() == "" or linea.strip().lower() == "salir":
+            break
+        lineas.append(linea)
+    texto = "\n".join(lineas)
+    if texto:
+        print("\n======= Resultado HTML =======\n")
+        resultado_html = parse_input(texto)
+        print(resultado_html)
+    input("\nPresione Enter para salir...")
+
+def analizar_json_por_pantalla_parser():
+    print("===================================")
+    print("       Proyecto Parser")
+    print("     Grupo: Los Parceros")
+    print("===================================\n")
+    print("Pegue el JSON a analizar (finalice con una línea vacía o 'salir'):")
+    lineas = []
+    while True:
+        try:
+            linea = input()
+        except EOFError:
+            break
+        if linea.strip() == "" or linea.strip().lower() == "salir":
+            break
+        lineas.append(linea)
+    texto_json = "\n".join(lineas)
+    try:
+        datos = json.loads(texto_json)
+    except Exception as e:
+        print(f"Error al parsear el JSON: {e}")
+        input("\nPresione Enter para salir...")
+        return
+    texto = convertir_json_a_texto(datos)
+    resultado_html = parse_input(texto)
+    print("\n======= Resultado HTML =======\n")
+    print(resultado_html)
+    input("\nPresione Enter para salir...")
 
 parser = yacc.yacc()
 
@@ -225,31 +300,20 @@ def parse_input(data):
     return parser.parse(data)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("===================================")
-        print("   Proyecto Parser TPI 2025")
-        print("     Grupo: Los Parceros")
-        print("===================================\n")
-        sys.exit(1)
-
-    archivo = sys.argv[1]
-
-    try:
-        with open(archivo, "r", encoding="utf-8") as f:
-            datos = json.load(f)
-    except Exception as e:
-        print(f"Error al leer el archivo JSON: {e}")
-        sys.exit(1)
-
-    # Convertir el JSON a texto simulado para el lexer
-    from Lexer import convertir_json_a_texto, lexer
-    texto = convertir_json_a_texto(datos)
-
-    # Ya no necesitas importar parser_equipos ni crear el parser aquí
-    resultado_html = parse_input(texto)
-
-    # Guardar HTML
-    salida = archivo.replace(".json", ".html")
-    with open(salida, "w", encoding="utf-8") as f:
-        f.write(resultado_html)
-    print(f"\n✅ Archivo HTML generado: {salida}")
+    print("Opciones:")
+    print("1. Analizar texto plano por pantalla")
+    print("2. Analizar JSON pegado por pantalla")
+    print("3. Analizar archivo JSON por ruta")
+    opcion = input("Seleccione opcion (1/2/3): ").strip()
+    if opcion == "1":
+        analizar_texto_directo_parser()
+    elif opcion == "2":
+        analizar_json_por_pantalla_parser()
+    elif opcion == "3":
+        ruta = input("Ingrese la dirección del archivo a analizar:\n").strip()
+        if not ruta:
+            print("No se ingresó ninguna ruta.")
+        else:
+            analizar_con_parser(ruta)
+    else:
+        print("Opción no válida.")
