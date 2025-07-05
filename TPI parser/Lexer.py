@@ -4,14 +4,12 @@ import sys
 import os
 
 tokens = [
-    'FIRMA_DIGITAL_t', 'EQUIPOS_t', 'EDAD_t', 'FECHA_INICIO_t', 'FECHA_FIN_t', 'LISTA_EQUIPO_t',
+    'FIRMA_DIGITAL_t', 'EQUIPOS_t', 'EDAD_t', 'FECHA_INICIO_t', 'FECHA_FIN_t',
     'NOMBRE_EQUIPO_t', 'IDENTIDAD_EQUIPO_t', 'DIRECCION_t', 'LINK_t', 'CARRERA_t', 'ASIGNATURA_t',
-    'UNIVERSIDAD_REGIONAL_t', 'ALIANZA_EQUIPO_t', 'INTEGRANTES_t', 'PROYECTO_t', 'CIUDAD_t',
+    'UNIVERSIDAD_REGIONAL_t', 'ALIANZA_EQUIPO_t', 'INTEGRANTES_t', 'PROYECTOS_t', 'CIUDAD_t',
     'CALLE_t', 'PAIS_t', 'NOMBRE_t', 'CARGO_t', 'FOTO_t', 'EMAIL_t', 'HABILIDADES_t', 'SALARIO_t',
-    'ACTIVO_t', 'ESTADO_t', 'RESUMEN_t', 'TAREAS_t', 'VIDEO_t', 'CONCLUSION_t', 'URL_t',
-    'PROTOCOLO_t', 'DOMINIO_t', 'PUERTO_t', 'RUTA_t', 'INTEGER_t', 'FLOAT_t', 'NOMBRE_USUARIO_t', 
-    'USUARIO_t', 'YYYY_t', 'MM_t', 'DD_t', 'EXTENSION_t', 'STRING_t', 'ATRIBUTO_t', 'SEPARADOR_t', 'BOOL_t',
-    'VERSION_t', 't_FECHA_INICIO_t','t_FECHA_FIN_t', 'LLAVEIZQ', 'LLAVEDER', 'CORCHIZQ', 'CORCHDER', 'DOS_PUNTOS', 'COMA', 'NULL_t',
+    'ACTIVO_t', 'ESTADO_t', 'RESUMEN_t', 'TAREAS_t', 'VIDEO_t', 'CONCLUSION_t',
+    'COMA', 'VERSION_t', 'LLAVEIZQ', 'LLAVEDER', 'CORCHIZQ', 'CORCHDER', 'DOS_PUNTOS', 'NULL_t', 'STRING_t'
 ]
 
 # Ignorar espacios, tabs y saltos de línea
@@ -21,7 +19,6 @@ t_LLAVEDER    = r'\}'
 t_CORCHIZQ    = r'\['
 t_CORCHDER    = r'\]'
 t_DOS_PUNTOS  = r':'
-t_COMA        = r','
 
 # null
 def t_NULL_t(t):
@@ -57,6 +54,21 @@ def t_IDENTIDAD_EQUIPO_t(t):
 
 def t_DIRECCION_t(t):
     r'DIRECCION_t\s+"[^"\n]+"'
+    t.value = t.value.split('"', 1)[1][:-1]
+    return t
+
+def t_CIUDAD_t(t):
+    r'CIUDAD_t\s+"[^"\n]+"'
+    t.value = t.value.split('"', 1)[1][:-1]
+    return t
+
+def t_CALLE_t(t):
+    r'CALLE_t\s+"[^"\n]+"'
+    t.value = t.value.split('"', 1)[1][:-1]
+    return t
+
+def t_PAIS_t(t):
+    r'PAIS_t\s+"[^"\n]+"'
     t.value = t.value.split('"', 1)[1][:-1]
     return t
 
@@ -186,7 +198,6 @@ def t_NAMETOKEN(t):
         # Si no está en la lista de tokens, lo ignora
         pass
 
-
 # Capturar valores booleanos
 def t_BOOL_t(t):
     r'\btrue\b|\bfalse\b'
@@ -209,10 +220,9 @@ def t_STRING_t(t):
     return t  
 
 # Detectar comas separadoras para listas
-def t_SEPARADOR_t(t):
+def t_COMA(t):
     r','
     return t
-
 
 # Aca maneja los errores léxicos que pueden ocurrir durante el análisis
 def t_error(t):
@@ -239,11 +249,9 @@ def cargar_json(nombre_archivo):
 def convertir_json_a_texto(datos):
     if not datos:
         return ""
-    
     texto = ""
     if "firma_digital" in datos:
         texto += f'FIRMA_DIGITAL_t "{datos["firma_digital"]}"\n'
-
     for equipo in datos.get("equipos", []):
         if "nombre_equipo" in equipo:
             texto += f'NOMBRE_EQUIPO_t "{equipo["nombre_equipo"]}"\n'
@@ -259,7 +267,9 @@ def convertir_json_a_texto(datos):
             texto += f'UNIVERSIDAD_REGIONAL_t "{equipo["universidad_regional"]}"\n'
         if "dirección" in equipo:
             dir = equipo["dirección"]
-            texto += f'DIRECCION_t "{dir.get("calle","")}, {dir.get("ciudad","")}, {dir.get("país","")}"\n'
+            texto += f'CALLE_t "{dir.get("calle","")}"\n'
+            texto += f'CIUDAD_t "{dir.get("ciudad","")}"\n'
+            texto += f'PAIS_t "{dir.get("país","")}"\n'
         if "alianza_equipo" in equipo:
             texto += f'ALIANZA_EQUIPO_t "{equipo["alianza_equipo"]}"\n'
         texto += "INTEGRANTES_t\n"
@@ -274,33 +284,36 @@ def convertir_json_a_texto(datos):
                 f'SALARIO_t {integrante.get("salario","")}, '
                 f'ACTIVO_t {str(integrante.get("activo","")).lower()}\n'
             )
-        for proyecto in equipo.get("proyectos", []):
-            if "nombre" in proyecto:
-                texto += f'PROYECTO_t "{proyecto["nombre"]}"\n'
-            if "estado" in proyecto:
-                texto += f'ESTADO_t "{proyecto["estado"]}"\n'
-            if "resumen" in proyecto:
-                texto += f'RESUMEN_t "{proyecto["resumen"]}"\n'
-            texto += "TAREAS_t\n"
-            for tarea in proyecto.get("tareas", []):
-                texto += (
-                    f'NOMBRE_t "{tarea.get("nombre","")}", '
-                    f'ESTADO_t "{tarea.get("estado","")}", '
-                    f'RESUMEN_t "{tarea.get("resumen","")}", '
-                    f'FECHA_INICIO_t "{tarea.get("fecha_inicio","")}", '
-                    f'FECHA_FIN_t "{tarea.get("fecha_fin","")}"\n'
-                )
-            if "fecha_inicio" in proyecto:
-                texto += f'FECHA_INICIO_t "{proyecto["fecha_inicio"]}"\n'
-            if "fecha_fin" in proyecto:
-                texto += f'FECHA_FIN_t "{proyecto["fecha_fin"]}"\n'
-            if "video" in proyecto:
-                texto += f'VIDEO_t "{proyecto["video"]}"\n'
-            if "conclusion" in proyecto:
-                texto += f'CONCLUSION_t "{proyecto["conclusion"]}"\n'
+        if "proyectos" in equipo:
+            texto += "PROYECTOS_t\n"
+            for proyecto in equipo.get("proyectos", []):
+                if "nombre" in proyecto:
+                    texto += f'NOMBRE_t "{proyecto["nombre"]}"\n'
+                if "estado" in proyecto:
+                    texto += f'ESTADO_t "{proyecto["estado"]}"\n'
+                if "resumen" in proyecto:
+                    texto += f'RESUMEN_t "{proyecto["resumen"]}"\n'
+                texto += "TAREAS_t\n"
+                for tarea in proyecto.get("tareas", []):
+                    texto += (
+                        f'NOMBRE_t "{tarea.get("nombre","")}", '
+                        f'ESTADO_t "{tarea.get("estado","")}", '
+                        f'RESUMEN_t "{tarea.get("resumen","")}", '
+                        f'FECHA_INICIO_t "{tarea.get("fecha_inicio","")}", '
+                        f'FECHA_FIN_t "{tarea.get("fecha_fin","")}"\n'
+                    )
+                if "fecha_inicio" in proyecto:
+                    texto += f'FECHA_INICIO_t "{proyecto["fecha_inicio"]}"\n'
+                if "fecha_fin" in proyecto:
+                    texto += f'FECHA_FIN_t "{proyecto["fecha_fin"]}"\n'
+                if "video" in proyecto:
+                    texto += f'VIDEO_t "{proyecto["video"]}"\n'
+                if "conclusion" in proyecto:
+                    texto += f'CONCLUSION_t "{proyecto["conclusion"]}"\n'
     if "version" in datos:
         texto += f'VERSION_t "{datos["version"]}"\n'
     return texto
+
 # Función para analizar el texto generado por el JSON con el lexer
 def analizar_con_lexer(nombre_archivo_json):
     datos = cargar_json(nombre_archivo_json)
