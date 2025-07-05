@@ -54,7 +54,7 @@ def t_IDENTIDAD_EQUIPO_t(t):
 
 def t_DIRECCION_t(t):
     r'DIRECCION_t\s+"[^"\n]+"'
-    t.value = t.value.split('"', 1)[1][:-1]
+    t.value = t.type
     return t
 
 def t_CIUDAD_t(t):
@@ -250,6 +250,7 @@ def convertir_json_a_texto(datos):
     if not datos:
         return ""
     texto = ""
+    texto += "{\n"
     if "firma_digital" in datos:
         texto += f'FIRMA_DIGITAL_t "{datos["firma_digital"]}"\n'
     for equipo in datos.get("equipos", []):
@@ -267,6 +268,7 @@ def convertir_json_a_texto(datos):
             texto += f'UNIVERSIDAD_REGIONAL_t "{equipo["universidad_regional"]}"\n'
         if "dirección" in equipo:
             dir = equipo["dirección"]
+            texto += 'DIRECCION_t "DIRECCION"\n'
             texto += f'CALLE_t "{dir.get("calle","")}"\n'
             texto += f'CIUDAD_t "{dir.get("ciudad","")}"\n'
             texto += f'PAIS_t "{dir.get("país","")}"\n'
@@ -312,6 +314,7 @@ def convertir_json_a_texto(datos):
                     texto += f'CONCLUSION_t "{proyecto["conclusion"]}"\n'
     if "version" in datos:
         texto += f'VERSION_t "{datos["version"]}"\n'
+    texto += "}\n"
     return texto
 
 # Función para analizar el texto generado por el JSON con el lexer
